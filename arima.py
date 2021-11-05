@@ -10,17 +10,27 @@ import pandas as pd
 
 
 
+numbersOfRowToRead = 11520
+trainSize = 10080
+testSize = 1440
+
+originFileName = "ukdale_def4.csv"
+seriesName = "Gas_Boiler"
+
+
+
+
+
+
 def parser(x):
 	return datetime.strptime(x, '%y-%m-%d %H:%M:%S')
 
+series = read_csv(originFileName,header=0,index_col=0,nrows=numbersOfRowToRead)
+print(series[seriesName].head())
 
-series = read_csv('Dataset/ukdale_def4.csv',header=0,index_col=0,nrows=11520)
-print(series['Gas_Boiler'].head())
 
-
-X = series['Gas_Boiler']
-size = int(len(X) * 0.87)
-train, test = X[0:size], X[size:len(X)]
+X = series[seriesName]
+train, test = X[0:trainSize], X[trainSize:trainSize+testSize]
 history = [x for x in train]
 predictions = list()
 
@@ -36,7 +46,6 @@ maxLen = len(test)
 for t in range(len(test)):
 
 	perc = (100 / maxLen) * t
-	print(perc)
 	print("\nPerc: " + str(perc))
 
 	output = model_fit.forecast()
@@ -64,9 +73,3 @@ pyplot.plot(fc_series, color='red')
 ax = pyplot.gca()
 ax.axes.xaxis.set_visible(False)
 pyplot.show()
-
-
-
-
-
-
