@@ -5,10 +5,8 @@ from datetime import datetime
 from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from math import sqrt
-import joblib
 import pandas as pd
-
-
+import os
 
 numbersOfRowToRead = 11520
 trainSize = 10080
@@ -19,13 +17,32 @@ seriesName = "Gas_Boiler"
 
 
 
+def save_series_to_csv(series, fileName):
+	path = "result/" + originFileName[:-4]
+	try:
+		os.mkdir(path)
+	except OSError:
+		print("Creation of the directory %s failed" % path)
+
+	path = "result/" + originFileName[:-4] + "/" + seriesName
+	try:
+		os.mkdir(path)
+	except OSError:
+		print("Creation of the directory %s failed" % path)
+
+
+	file = open(path + "/" + fileName, "w")
+	file.write(series.to_csv())
+	file.close()
 
 
 
 def parser(x):
 	return datetime.strptime(x, '%y-%m-%d %H:%M:%S')
 
-series = read_csv(originFileName,header=0,index_col=0,nrows=numbersOfRowToRead)
+
+
+series = read_csv("Dataset/" + originFileName,header=0,index_col=0,nrows=numbersOfRowToRead)
 print(series[seriesName].head())
 
 
@@ -37,9 +54,7 @@ predictions = list()
 
 model = ARIMA(history, order=(5,0,1))
 model_fit = model.fit(start_params=[0,0,0,0,0,0,0,1])
-
 maxLen = len(test)
-
 
 
 # walk-forward validation
@@ -57,9 +72,8 @@ for t in range(len(test)):
 	model_fit = model_fit.append([test[t]])
 	print('predicted=%f, expected=%f' % (yhat, obs))
 
-
+#add time index to predictions
 fc_series = pd.Series(predictions,index=test.index)
-
 
 
 # evaluate forecasts
@@ -72,4 +86,11 @@ pyplot.plot(fc_series, color='red')
 
 ax = pyplot.gca()
 ax.axes.xaxis.set_visible(False)
+
+#saving date
+save_series_to_csv(train, "train.csv")
+save_series_to_csv(test, "test.csv")
+save_series_to_csv(fc_series, "predictions.csv")
+
+#show graph
 pyplot.show()
