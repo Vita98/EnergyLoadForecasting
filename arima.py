@@ -6,17 +6,19 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from math import sqrt
 import joblib
+import pandas as pd
+
 
 
 def parser(x):
 	return datetime.strptime(x, '%y-%m-%d %H:%M:%S')
 
-series = read_csv('ukdale_def4.csv',header=0,index_col=0,nrows=43640)
-print(series['Tv_Dvd_Lamp'].head())
+series = read_csv('ukdale_def4.csv',header=0,index_col=0,nrows=10000)
+print(series['Gas_Boiler'].head())
 
 
 X = series['Gas_Boiler']
-size = int(len(X) * 0.86)
+size = int(len(X) * 0.66)
 train, test = X[0:size], X[size:len(X)]
 history = [x for x in train]
 predictions = list()
@@ -43,11 +45,22 @@ for t in range(len(test)):
 	print('predicted=%f, expected=%f' % (yhat, obs))
 
 
+fc_series = pd.Series(predictions,index=test.index)
 
 # evaluate forecasts
 rmse = sqrt(mean_squared_error(test, predictions))
 print('Test RMSE: %.3f' % rmse)
 # plot forecasts against actual outcomes
-pyplot.plot(test)
-pyplot.plot(predictions, color='red')
+pyplot.plot(train, color='blue')
+pyplot.plot(test, color='blue')
+pyplot.plot(fc_series, color='red')
+
+ax = pyplot.gca()
+ax.axes.xaxis.set_visible(False)
 pyplot.show()
+
+
+
+
+
+
