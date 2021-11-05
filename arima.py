@@ -24,11 +24,11 @@ class TestingTimeType(enum.IntEnum):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_WEEK
+trainSize = TrainignTimeType.ONE_MONTH
 testSize = TestingTimeType.ONE_DAY
 
-originFileName = "ukdale_def1.csv"
-seriesName = "Boiler"
+originFileName = "ukdale_def4.csv"
+seriesName = "Tv_Dvd_Lamp"
 
 
 
