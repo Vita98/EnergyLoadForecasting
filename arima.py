@@ -32,7 +32,7 @@ def save_series_to_csv(series, fileName):
 		print("Creation of the directory %s failed" % path)
 
 	day = trainSize / 1440
-	file = open(path + "/" + str(int(day)) + "Days" + fileName, "w")
+	file = open(path + "/" + str(int(day)) + "days_" + fileName, "w")
 	file.write(series.to_csv())
 	file.close()
 
