@@ -27,8 +27,9 @@ class TestingTimeType(enum.IntEnum):
 trainSize = TrainignTimeType.ONE_WEEK
 testSize = TestingTimeType.ONE_DAY
 
-originFileName = "ukdale_def1.csv"
-seriesName = "Boiler"
+originFileName = "ukdale_def2.csv"
+seriesName = "Laptop"
+startFrom = 1
 
 
 
@@ -91,7 +92,7 @@ def main():
 	numbersOfRowToRead = int(trainSize) + int(testSize)
 
     #Reading the series from the dataset file
-	series = read_csv("Dataset/" + originFileName,header=0,index_col=0,nrows=numbersOfRowToRead)
+	series = read_csv("Dataset/" + originFileName,header=0,index_col=0,nrows=numbersOfRowToRead,skiprows=range(1,startFrom))
 	print(series[seriesName].head())
 
 	#Splitting the dataset into training and testing 
