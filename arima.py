@@ -24,11 +24,11 @@ class TestingTimeType(enum.IntEnum):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_MONTH
+trainSize = TrainignTimeType.ONE_WEEK
 testSize = TestingTimeType.ONE_DAY
 
-originFileName = "ukdale_def4.csv"
-seriesName = "Washing_Machine_Microwave_breadmaker"
+originFileName = "ukdale_def5.csv"
+seriesName = "Primary TV"
 
 
 
@@ -101,6 +101,8 @@ def main():
 	predictions = list()
 
 	#Creating the ARIMA model
+	#(5,2,1) start_params=[0,0,0,0,0,0,1,5]
+	#(5,1,1) start_params=[0,0,0,0,0,0,1,3]
 	print("\nTraining the model...\n")
 	model = ARIMA(history, order=(5,0,1))
 	model_fit = model.fit(start_params=[0,0,0,0,0,0,0,1])
@@ -136,6 +138,8 @@ def main():
 	pyplot.plot(train, color='blue')
 	pyplot.plot(test, color='blue')
 	pyplot.plot(fc_series, color='red')
+	day = trainSize / 1440
+	pyplot.title(seriesName + " " + str(int(day)) + " days trained")
 	ax = pyplot.gca()
 	ax.axes.xaxis.set_visible(False)
 
