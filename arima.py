@@ -30,8 +30,8 @@ def save_series_to_csv(series, fileName):
 	except OSError:
 		print("Creation of the directory %s failed" % path)
 
-
-	file = open(path + "/" + fileName, "w")
+	day = trainSize / 1440
+	file = open(path + "/" + str(int(day)) + "Days" + fileName, "w")
 	file.write(series.to_csv())
 	file.close()
 
@@ -61,7 +61,7 @@ maxLen = len(test)
 for t in range(len(test)):
 
 	perc = (100 / maxLen) * t
-	print("\nPerc: " + str(perc))
+	print("\nPerc: %.2f" %perc)
 
 	output = model_fit.forecast()
 	yhat = output[0]
