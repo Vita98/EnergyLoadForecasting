@@ -8,6 +8,7 @@ from math import sqrt
 import pandas as pd
 import os
 
+# 1440 = 1 day, 10080 = 7 days, 43200 = 30 days
 numbersOfRowToRead = 11520
 trainSize = 10080
 testSize = 1440
