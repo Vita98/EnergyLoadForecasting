@@ -9,8 +9,8 @@ import pandas as pd
 import os
 
 # 1440 = 1 day, 10080 = 7 days, 43200 = 30 days
-numbersOfRowToRead = 11520
-trainSize = 10080
+numbersOfRowToRead = 44640
+trainSize = 43200
 testSize = 1440
 
 originFileName = "ukdale_def4.csv"
@@ -71,7 +71,7 @@ for t in range(len(test)):
 	history.append(obs)
 
 	model_fit = model_fit.append([test[t]])
-	print('predicted=%f, expected=%f' % (yhat, obs))
+	#print('predicted=%f, expected=%f' % (yhat, obs))
 
 #add time index to predictions
 fc_series = pd.Series(predictions,index=test.index)
