@@ -13,12 +13,12 @@ import pandas as pd
 def parser(x):
 	return datetime.strptime(x, '%y-%m-%d %H:%M:%S')
 
-series = read_csv('ukdale_def4.csv',header=0,index_col=0,nrows=10000)
+series = read_csv('ukdale_def4.csv',header=0,index_col=0,nrows=11520)
 print(series['Gas_Boiler'].head())
 
 
 X = series['Gas_Boiler']
-size = int(len(X) * 0.66)
+size = int(len(X) * 0.87)
 train, test = X[0:size], X[size:len(X)]
 history = [x for x in train]
 predictions = list()
