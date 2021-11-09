@@ -24,12 +24,12 @@ class TestingTimeType(enum.IntEnum):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_WEEK
+trainSize = TrainignTimeType.ONE_MONTH
 testSize = TestingTimeType.ONE_DAY
 
 
-originFileName = "ukdale_def2.csv"
-seriesName = "Laptop"
+originFileName = "ukdale_def5.csv"
+seriesName = "Kettle"
 startFrom = 1
 
 
@@ -42,7 +42,7 @@ startFrom = 1
 
 #Save the time series given as parameter 
 def save_series_to_csv(series, fileName):
-	path = "result/" + originFileName[:-4]
+	path = "results/ARIMA" + originFileName[:-4]
 
 	if not os.path.isdir(path):
 		try:
@@ -50,7 +50,7 @@ def save_series_to_csv(series, fileName):
 		except OSError:
 			print("Creation of the directory %s failed" % path)
 
-	path = "result/" + originFileName[:-4] + "/" + seriesName
+	path = "results/ARIMA" + originFileName[:-4] + "/" + seriesName
 
 	if not os.path.isdir(path):
 		try:
@@ -66,7 +66,7 @@ def save_series_to_csv(series, fileName):
 
 #Save the plot from pyplot
 def save_plot():
-	path = "result/" + originFileName[:-4]
+	path = "results/ARIMA" + originFileName[:-4]
 
 	if not os.path.isdir(path):
 		try:
@@ -74,7 +74,7 @@ def save_plot():
 		except OSError:
 			print("Creation of the directory %s failed" % path)
 
-	path = "result/" + originFileName[:-4] + "/" + seriesName
+	path = "results/ARIMA" + originFileName[:-4] + "/" + seriesName
 	if not os.path.isdir(path):
 		try:
 			os.mkdir(path)
@@ -107,8 +107,8 @@ def main():
 	#(5,2,1) start_params=[0,0,0,0,0,0,1,5]
 	#(5,1,1) start_params=[0,0,0,0,0,0,1,3]
 	print("\nTraining the model...\n")
-	model = ARIMA(history, order=(5,0,1))
-	model_fit = model.fit(start_params=[0,0,0,0,0,0,0,1])
+	model = ARIMA(history, order=(5,2,1))
+	model_fit = model.fit(start_params=[0,0,0,0,0,0,1,5])
 	maxLen = len(test)
 
 
