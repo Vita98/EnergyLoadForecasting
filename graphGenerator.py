@@ -18,6 +18,7 @@ trainSize = TrainignTimeType.ONE_MONTH
 
 originFileName = "ukdale_def5.csv"
 seriesName = "Dishwasher"
+algorithm = "Arima"
 
 
 
@@ -28,7 +29,7 @@ def parser(x):
 	return datetime.strptime(x, '%y-%m-%d %H:%M:%S')
 
 #Defining the path
-finalPath = "result/" + originFileName.split(".")[0] + "/" + seriesName + "/"  
+finalPath = "results/" + algorithm + "/" + originFileName.split(".")[0] + "/" + seriesName + "/"  
 
 predictionPath = finalPath + str(int(trainSize)) + "days_predictions.csv"
 testPath = finalPath + str(int(trainSize)) + "days_test.csv"
