@@ -132,8 +132,8 @@ def forecast_accuracy(forecast, actual):
 trainSize = TrainignTimeType.ONE_MONTH
 testSize = TestingTimeType.ONE_DAY
 
-originFileName = "ukdale_def2.csv"
-seriesName = "Monitor"
+originFileName = "ukdale_def4.csv"
+seriesName = "Gas_Boiler"
 
 
 
@@ -168,7 +168,7 @@ mod = sm.tsa.statespace.SARIMAX(df,
                                 enforce_invertibility=False)
 """
 #creating SARIMA model
-my_order = (1, 1, 1)
+my_order = (1, 0, 1)
 my_seasonal_order = (0, 0, 1, 12)
 # define model
 
