@@ -25,7 +25,7 @@ class TestingTimeType(enum.IntEnum):
 
 
 	#Save the time series given as parameter 
-def save_series_to_csv(series, fileName):
+def save_series_to_csv(series, fileName, seriesName):
 	path = "results/SARIMA/" + originFileName[:-4]
 
 	if not os.path.isdir(path):
@@ -78,7 +78,7 @@ def save_accuracy_to_csv(values, fileName, seriesName):
 	csv_file.close()
 
 #Save the plot from pyplot
-def save_plot():
+def save_plot(seriesName):
 	path = "results/SARIMA/" + originFileName[:-4]
 
 	if not os.path.isdir(path):
@@ -129,88 +129,100 @@ def forecast_accuracy(forecast, actual):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_MONTH
+trainSize = TrainignTimeType.ONE_WEEK
 testSize = TestingTimeType.ONE_DAY
+shiftRow = 150000
 
 originFileName = "ukdale_def2.csv"
-seriesName = "Monitor"
+#seriesName = "Monitor"
+
+
+
+
+
+def main(seriesName):
+
+	#main function
+
+
+	#Splitting the dataset into training and testing 
+	X = series[seriesName]
+	train, test = X[0:trainSize], X[trainSize:trainSize+testSize]
+	history = [x for x in train]
+	predictions = list()
+
+	print("\nTraining the model...\n")
+
+	maxLen = len(test)
+	"""
+	mod = sm.tsa.statespace.SARIMAX(df,
+	                                order=(1, 0, 1),
+	                                seasonal_order=(0, 0, 1, 12),
+	                                enforce_stationarity=False,
+	                                enforce_invertibility=False)
+	"""
+	#creating SARIMA model
+	my_order = (1, 0, 1)
+	my_seasonal_order = (0, 0, 1, 12)
+	# define model
+
+	model = sm.tsa.statespace.SARIMAX(train, order=my_order, seasonal_order=my_seasonal_order, enforce_stationarity=False,
+	                                enforce_invertibility=False)
+
+	model_fit = model.fit()
+
+	# plot forecasts against actual outcomes
+	yhat = model_fit.predict(start=0, end=len(test))
+	#print(yhat)
+	predictions = list()
+
+	for value in yhat[1:]:
+	    predictions.append(value)
+
+	print("Testing...")
+
+
+	fc_series = pd.Series(predictions,index=test.index)
+	fc_series[fc_series < 0] = 0
+
+	# evaluate forecasts
+	values = forecast_accuracy(fc_series.values, test.values)
+	print(values)
+
+
+	pyplot.figure(figsize=(12,5), dpi=100)
+	pyplot.plot(train, color='blue')
+	pyplot.plot(test, color='blue')
+	pyplot.plot(fc_series, color='red')
+	day = trainSize / 1440
+	pyplot.title(seriesName + " " + str(int(day)) + " days trained")
+	ax = pyplot.gca()
+	ax.axes.xaxis.set_visible(False)
+
+	#saving date
+	save_series_to_csv(train, "train.csv",seriesName)
+	save_series_to_csv(test, "test.csv",seriesName)
+	save_series_to_csv(fc_series, "predictions.csv",seriesName)
+	save_accuracy_to_csv(values, "accuracy.csv", seriesName)
+	save_plot(seriesName)
+	#pyplot.show()
+
+	print("\nAll done!\n")
 
 
 
 
 
 
+if __name__ == '__main__':
 
+	numbersOfRowToRead = int(trainSize) + int(testSize) + shiftRow
 
+	#Reading the series from the dataset file
+	series = read_csv("Dataset/" + originFileName,header=0,index_col=0,nrows=numbersOfRowToRead,skiprows=range(1,shiftRow))
+	seriesNames = list(series.columns.values)
 
+	#seriesNames = ['Speakers']
 
-#main function
-numbersOfRowToRead = int(trainSize) + int(testSize)
-
-#Reading the series from the dataset file
-series = read_csv("Dataset/" + originFileName,header=0,index_col=0,nrows=numbersOfRowToRead, usecols=["Time", seriesName])
-print(series[seriesName].head())
-
-#Splitting the dataset into training and testing 
-X = series[seriesName]
-train, test = X[0:trainSize], X[trainSize:trainSize+testSize]
-history = [x for x in train]
-predictions = list()
-
-print("\nTraining the model...\n")
-
-maxLen = len(test)
-"""
-mod = sm.tsa.statespace.SARIMAX(df,
-                                order=(1, 0, 1),
-                                seasonal_order=(0, 0, 1, 12),
-                                enforce_stationarity=False,
-                                enforce_invertibility=False)
-"""
-#creating SARIMA model
-my_order = (1, 1, 1)
-my_seasonal_order = (0, 0, 1, 12)
-# define model
-
-model = sm.tsa.statespace.SARIMAX(train, order=my_order, seasonal_order=my_seasonal_order, enforce_stationarity=False,
-                                enforce_invertibility=False)
-
-model_fit = model.fit()
-
-# plot forecasts against actual outcomes
-yhat = model_fit.predict(start=0, end=len(test))
-#print(yhat)
-predictions = list()
-
-for value in yhat[1:]:
-    predictions.append(value)
-
-print("Testing...")
-
-
-fc_series = pd.Series(predictions,index=test.index)
-fc_series[fc_series < 0] = 0
-
-# evaluate forecasts
-values = forecast_accuracy(fc_series.values, test.values)
-print(values)
-
-
-pyplot.figure(figsize=(12,5), dpi=100)
-pyplot.plot(train, color='blue')
-pyplot.plot(test, color='blue')
-pyplot.plot(fc_series, color='red')
-day = trainSize / 1440
-pyplot.title(seriesName + " " + str(int(day)) + " days trained")
-ax = pyplot.gca()
-ax.axes.xaxis.set_visible(False)
-
-#saving date
-save_series_to_csv(train, "train.csv")
-save_series_to_csv(test, "test.csv")
-save_series_to_csv(fc_series, "predictions.csv")
-save_accuracy_to_csv(values, "accuracy.csv", seriesName)
-save_plot()
-#pyplot.show()
-
-print("\nAll done!\n")
+	for s in seriesNames:
+		main(s)
