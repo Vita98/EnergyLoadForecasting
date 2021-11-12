@@ -9,12 +9,14 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.metrics import mean_squared_error
 from pandas import read_csv
 from datetime import datetime
+import numpy as np
+import pandas as pd
  
 # one-step sarima forecast
 def sarima_forecast(history, config):
-	order, sorder, trend = config
+	order, sorder = config
 	# define model
-	model = SARIMAX(history, order=order, seasonal_order=sorder, trend=trend)
+	model = SARIMAX(history, order=order, seasonal_order=sorder)
 	# fit model
 	model_fit = model.fit(disp=False)
 	# make one step forecast
@@ -31,6 +33,22 @@ def train_test_split(data, n_test):
  
 # walk-forward validation for univariate data
 def walk_forward_validation(data, n_test, cfg):
+	train, test = train_test_split(data, n_test)
+	history = [x for x in train]
+	order, sorder = cfg
+	# define model
+	model = SARIMAX(history, order=order, seasonal_order=sorder)
+	model_fit = model.fit(disp=False)
+	# plot forecasts against actual outcomes
+	yhat = model_fit.predict(start=0, end=len(test))
+	# print(yhat)
+	predictions = list()
+
+	for value in yhat[1:]:
+		predictions.append(value)
+
+	return measure_rmse(test, predictions)
+	''' 
 	predictions = list()
 	# split dataset
 	train, test = train_test_split(data, n_test)
@@ -45,8 +63,8 @@ def walk_forward_validation(data, n_test, cfg):
 		# add actual observation to history for the next loop
 		history.append(test[i])
 	# estimate prediction error
-	error = measure_rmse(test, predictions)
-	return error
+	error = measure_rmse(test, predictions) '''
+	#return error
  
 # score a model, return None on failure
 def score_model(data, n_test, cfg, debug=False):
@@ -87,8 +105,12 @@ def grid_search(data, cfg_list, n_test, parallel=True):
 	return scores
  
 # create a set of sarima configs to try
-def sarima_configs(seasonal=[0]):
+def sarima_configs(seasonal=[150,180,210,240,270,300,360,720]):
+	#
+	#seasonal = [12]
 	models = list()
+
+	'''
 	# define config lists
 	p_params = [0, 1, 2]
 	d_params = [0, 1]
@@ -96,8 +118,13 @@ def sarima_configs(seasonal=[0]):
 	t_params = ['n','c','t','ct']
 	P_params = [0, 1, 2]
 	D_params = [0, 1]
-	Q_params = [0, 1, 2]
+	Q_params = [0, 1, 2]'''
 	m_params = seasonal
+
+	for m in m_params:
+		cfg = [(1, 0, 1), (0, 0, 1, m)]
+		models.append(cfg)
+	'''
 	# create config instances
 	for p in p_params:
 		for d in d_params:
@@ -108,7 +135,7 @@ def sarima_configs(seasonal=[0]):
 							for Q in Q_params:
 								for m in m_params:
 									cfg = [(p,d,q), (P,D,Q,m), t]
-									models.append(cfg)
+									models.append(cfg)'''
 	return models
 
 #Parser for the read_csv
@@ -138,10 +165,10 @@ class TestingTimeType(enum.IntEnum):
 										'''
 trainSize = TrainignTimeType.ONE_WEEK
 testSize = TestingTimeType.ONE_DAY
-shiftRow = 150000
+shiftRow = 1
 
 originFileName = "ukdale_def4.csv"
-seriesName = "Gas_Boiler"
+seriesName = "Tv_Dvd_Lamp"
 
 
 
