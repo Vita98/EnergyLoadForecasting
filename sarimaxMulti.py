@@ -129,12 +129,12 @@ def forecast_accuracy(forecast, actual):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_MONTH
+trainSize = TrainignTimeType.ONE_WEEK
 testSize = TestingTimeType.ONE_DAY
-shiftRow = 1#561
+shiftRow = 150000#561
 
-originFileName = "ukdale_def4.csv"
-seriesName = "Gas_Boiler"
+originFileName = "ukdale_def2.csv"
+seriesName = "Speaker"
 
 
 
@@ -211,11 +211,12 @@ def main():
 
 if __name__ == '__main__':
 
-	numbersOfRowToRead = int(trainSize) + int(testSize)
+	numbersOfRowToRead = int(trainSize) + int(testSize) + int(shiftRow)
 
 	#Reading the series from the dataset file
-	series = read_csv("Dataset/" + originFileName,header=0,index_col=0,nrows=numbersOfRowToRead,skiprows=range(1,shiftRow))
-	seriesNames = list(series.columns.values)
+	series = read_csv("Dataset/" + originFileName,header=0,index_col=0,nrows=numbersOfRowToRead,skiprows=[i for i in range(1,shiftRow)])
+	#seriesNames = list(series.columns.values)
+	#print(seriesNames)
 
 	series["total"] = series.sum(axis=1)
 
