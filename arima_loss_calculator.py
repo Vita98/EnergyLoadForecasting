@@ -16,7 +16,7 @@ datasateBaseName = "ukdale_def"
 
 
 
-def save_accuracy_to_csv(values,path,day):
+def save_accuracy_to_csv(values,path,day,seriesName):
 
 	if not os.path.isdir(path):
 		try:
@@ -28,14 +28,14 @@ def save_accuracy_to_csv(values,path,day):
 	with open(path + "/" + "accuracy.csv", mode="a+") as csv_file:
 		lines = csv_file.readlines()
 
-		fieldnames = ['mape', 'corr', 'rmse', 'minmax', 'days']
+		fieldnames = ['mape', 'corr', 'rmse', 'minmax', 'seriesName', 'days']
 		writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
 
 		if os.stat(path + "/" + "accuracy.csv").st_size == 0:
-			writer.writerow({'mape':values.get("mape"),'corr':values.get("corr"),'rmse':values.get("rmse"),'minmax':values.get("minmax"), 'days':str(int(day))})
+			writer.writerow({'mape':values.get("mape"),'corr':values.get("corr"),'rmse':values.get("rmse"),'minmax':values.get("minmax"), 'seriesName':seriesName, 'days':str(int(day))})
 		else:
-			writer.writerow({'mape':values.get("mape"),'corr':values.get("corr"),'rmse':values.get("rmse"),'minmax':values.get("minmax"), 'days':str(int(day))})
+			writer.writerow({'mape':values.get("mape"),'corr':values.get("corr"),'rmse':values.get("rmse"),'minmax':values.get("minmax"), 'seriesName':seriesName, 'days':str(int(day))})
 
 # Accuracy metrics
 def forecast_accuracy(forecast, actual):
@@ -52,21 +52,21 @@ def forecast_accuracy(forecast, actual):
             'corr':corr, 'rmse':rmse,'minmax':minmax})
 
 
-def calc_loss(path):
+def calc_loss(path,outPath,seriesName):
 	#print(path + "/7days_predictions.csv")
 	if os.path.exists(path + "/7days_predictions.csv") and os.path.exists(path + "/7days_test.csv"):
 		predictions = read_csv(path + "/7days_predictions.csv",index_col=0,header=None)
 		test = read_csv(path + "/7days_test.csv",index_col=0,header=None)
 
 		acc = forecast_accuracy(predictions.values,test.values)
-		save_accuracy_to_csv(acc,path,7)
+		save_accuracy_to_csv(acc,outPath,7,seriesName)
 
 	if os.path.exists(path + "/30days_predictions.csv") and os.path.exists(path + "/30days_test.csv"):
 		predictions = read_csv(path + "/30days_predictions.csv",index_col=0,header=None)
 		test = read_csv(path + "/30days_test.csv",index_col=0,header=None)
 
 		acc = forecast_accuracy(predictions.values,test.values)
-		save_accuracy_to_csv(acc,path,30)
+		save_accuracy_to_csv(acc,outPath,30,seriesName)
 
 
 def main():
@@ -78,11 +78,12 @@ def main():
 		#reading the header from the dataset
 		series = read_csv("Dataset/" + datasetName + ".csv",header=0,index_col=0,nrows=1)
 		seriesNames = list(series.columns.values)
+		outPath = basePath + datasetName
 
 		for serie in seriesNames:
-			seriesPath = basePath + datasetName + "/" + serie
+			seriesPath = outPath + "/" + serie
 			print(seriesPath)
-			calc_loss(seriesPath)
+			calc_loss(seriesPath,outPath,serie)
 
 
 if __name__ == "__main__":
