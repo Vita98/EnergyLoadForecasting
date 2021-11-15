@@ -42,7 +42,7 @@ def save_plot(path,seriesName,day):
 def newPlot(train,test,predictions,seriesName,path,day):
 	pyplot.figure(figsize=(12,5), dpi=100)
 	pyplot.plot(train, color='blue',label="Train")
-	pyplot.plot(test, color='blue',label="Test")
+	pyplot.plot(test, color='orange',label="Test")
 	pyplot.plot(predictions, color='red',label="Prediction")
 	pyplot.title(seriesName + " " + str(int(day)) + " days trained")
 	ax = pyplot.gca()
