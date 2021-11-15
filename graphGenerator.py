@@ -14,10 +14,10 @@ class TrainignTimeType(enum.IntEnum):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_MONTH
+trainSize = TrainignTimeType.ONE_WEEK
 
-originFileName = "ukdale_def5.csv"
-seriesName = "Dishwasher"
+originFileName = "ukdale_def1.csv"
+seriesName = "Datalogger_PC"
 algorithm = "Arima"
 
 
@@ -65,14 +65,16 @@ else:
 #Showing the graph with matplotlib
 print("\nShowing the graph...\n")
 pyplot.figure(figsize=(12,5), dpi=100)
-if train is not None:
-	pyplot.plot(train, color='blue')
+#if train is not None:
+#	pyplot.plot(train, color='blue')
 if test is not None:
-	pyplot.plot(test, color='blue')
+	pyplot.plot(test[:60], color='orange')
 if pred is not None:
-	pyplot.plot(pred, color='red')
+	pyplot.plot(pred[:60], color='red')
 day = trainSize / 1440
 pyplot.title(seriesName + " " + str(int(trainSize)) + " days trained")
-ax = pyplot.gca()
-ax.axes.xaxis.set_visible(False)
+pyplot.xticks(rotation=90)
+
+#ax = pyplot.gca()
+#ax.axes.xaxis.set_visible(False)
 pyplot.show()
