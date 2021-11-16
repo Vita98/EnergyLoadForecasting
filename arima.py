@@ -107,8 +107,8 @@ def main():
 	#(5,2,1) start_params=[0,0,0,0,0,0,1,5]
 	#(5,1,1) start_params=[0,0,0,0,0,0,1,3]
 	print("\nTraining the model...\n")
-	model = ARIMA(history, order=(5,2,1))
-	model_fit = model.fit(start_params=[0,0,0,0,0,0,1,5])
+	model = ARIMA(history, order=(5,0,1))
+	model_fit = model.fit()
 	maxLen = len(test)
 
 
