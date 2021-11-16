@@ -190,7 +190,7 @@ def main(seriesName):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_WEEK
+trainSize = TrainignTimeType.ONE_MONTH
 testSize = TestingTimeType.ONE_DAY
 shiftRow = 1
 
