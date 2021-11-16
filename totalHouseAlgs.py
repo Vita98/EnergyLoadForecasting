@@ -26,7 +26,7 @@ class TestingTimeType(enum.IntEnum):
 # Save the time series given as parameter
 def save_series_to_csv(series, fileName, seriesName, algorithmType):
     try:
-        if algorithmType in "arima sarima sarimax":
+        if algorithmType in "arima sarima sarimax arimastd":
             path = "results/" + algorithmType.upper() + "/" + originFileName[:-4] + "/total"
 
             if not os.path.isdir(path):
@@ -48,7 +48,7 @@ def save_series_to_csv(series, fileName, seriesName, algorithmType):
 #
 def save_accuracy_to_csv(values, fileName, seriesName, algorithmType):
     try:
-        if algorithmType in "arima sarima sarimax":
+        if algorithmType in "arima sarima sarimax arimastd":
             path = "results/" + algorithmType.upper() + "/" + originFileName[:-4] + "/total"
 
             if not os.path.isdir(path):
@@ -82,7 +82,7 @@ def save_accuracy_to_csv(values, fileName, seriesName, algorithmType):
 # Save the plot from pyplot
 def save_plot(seriesName, algorithmType):
     try:
-        if algorithmType in "arima sarima sarimax":
+        if algorithmType in "arima sarima sarimax arimastd":
             path = "results/" + algorithmType.upper() + "/" + originFileName[:-4] + "/total"
 
             if not os.path.isdir(path):
@@ -148,6 +148,20 @@ def main(algorithmType):
             model_fit = model_fit.append([test[t]])
 
     # print('predicted=%f, expected=%f' % (yhat, obs))
+    elif algorithmType == "arimastd":
+
+        print("\nTraining the model...\n")
+        model = ARIMA(train, order=(5,0,1))
+        model_fit = model.fit()
+        
+
+        yhat = model_fit.predict(start=0, end=len(test))
+        #print(yhat)
+        predictions = list()
+
+        for value in yhat[1:]:
+            predictions.append(value)
+
 
 
     elif algorithmType == "sarima":
@@ -222,10 +236,10 @@ def main(algorithmType):
     # saving date
     seriesName = "total"
 
-    save_series_to_csv(train, "trainTotal.csv", seriesName, algorithmType=algorithmType)
-    save_series_to_csv(test, "testTotal.csv", seriesName, algorithmType=algorithmType)
-    save_series_to_csv(fc_series, "predictionsTotal.csv", seriesName, algorithmType=algorithmType)
-    save_accuracy_to_csv(values, "accuracyTotal.csv", seriesName, algorithmType=algorithmType)
+    save_series_to_csv(train, "train.csv", seriesName, algorithmType=algorithmType)
+    save_series_to_csv(test, "test.csv", seriesName, algorithmType=algorithmType)
+    save_series_to_csv(fc_series, "predictions.csv", seriesName, algorithmType=algorithmType)
+    save_accuracy_to_csv(values, "accuracy.csv", seriesName, algorithmType=algorithmType)
     save_plot("Total", algorithmType=algorithmType)
     # pyplot.show()
 
@@ -235,7 +249,7 @@ def main(algorithmType):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_WEEK
+trainSize = TrainignTimeType.ONE_MONTH
 testSize = TestingTimeType.ONE_DAY
   # 561
 
@@ -244,10 +258,10 @@ testSize = TestingTimeType.ONE_DAY
 
 if __name__ == '__main__':
 
-    #houses = ["ukdale_def1.csv", "ukdale_def2.csv", "ukdale_def3.csv", "ukdale_def4.csv", "ukdale_def5.csv"]
-    houses = ["ukdale_def3.csv"]
+    houses = ["ukdale_def1.csv", "ukdale_def2.csv", "ukdale_def3.csv", "ukdale_def4.csv", "ukdale_def5.csv"]
+    #houses = ["ukdale_def4.csv"]
     #algorithms = ["arima", "sarima", "sarimax"]
-    algorithms = ["sarima", "sarimax"]
+    algorithms = ["arimastd"]
 
     # Reading the series from the dataset file
 
