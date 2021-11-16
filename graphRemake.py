@@ -3,12 +3,13 @@ import os
 import numpy as np
 import csv
 from matplotlib import pyplot
+import time
 
 
 
 
-basePath = "results/SARIMAX/"
-datasateBaseName = "ukdale_def"
+basePath = "results/ARIMA/"
+datasateBaseName = "ukdale_def2"
 
 
 
@@ -38,6 +39,7 @@ def save_plot(path,seriesName,day):
 
 	finalPath = path + "/" + str(int(day)) + "days_plot.png"
 	pyplot.savefig(finalPath, dpi=100)
+	pyplot.close()
 
 def newPlot(train,test,predictions,seriesName,path,day):
 	pyplot.figure(figsize=(12,5), dpi=100)
@@ -53,27 +55,28 @@ def newPlot(train,test,predictions,seriesName,path,day):
 
 def main():
 	#Iterating for all the 
-	for i in range(1,6):
-		datasetName = datasateBaseName + str(i)
+	#for i in range(1,6):
 
-		#reading the header from the dataset
-		series = read_csv("Dataset/" + datasetName + ".csv",header=0,index_col=0,nrows=1)
-		seriesNames = list(series.columns.values)
-		seriesNames += ["total"]
-		outPath = basePath + datasetName
+	#datasetName = datasateBaseName + str(i)
+	datasetName = datasateBaseName
 
-		for serie in seriesNames:
-			seriesPath = outPath + "/" + serie
-			print(seriesPath)
+	#reading the header from the dataset
+	series = read_csv("Dataset/" + datasetName + ".csv",header=0,index_col=0,nrows=1)
+	seriesNames = list(series.columns.values)
+	seriesNames += ["total"]
+	outPath = basePath + datasetName
 
-			#reading the csv
-			predictions7,test7,train7,predictions30,test30,train30 = read_series(seriesPath)
+	for serie in seriesNames:
+		seriesPath = outPath + "/" + serie
+		print(seriesPath)
 
-			#plot the new plot
-			newPlot(train7,test7,predictions7,serie,seriesPath,7)
-			newPlot(train30,test30,predictions30,serie,seriesPath,30)
+		#reading the csv
+		predictions7,test7,train7,predictions30,test30,train30 = read_series(seriesPath)
 
-			print(seriesPath + " done! \n")
+		#plot the new plot
+		newPlot(train7,test7,predictions7,serie,seriesPath,7)
+		end = newPlot(train30,test30,predictions30,serie,seriesPath,30)
+		print(seriesPath + " done! \n")
 
 if __name__ == "__main__":
 	main()
