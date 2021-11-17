@@ -8,8 +8,8 @@ import time
 
 
 
-basePath = "results/ARIMA/"
-datasateBaseName = "ukdale_def2"
+basePath = "results/ARIMASTD/"
+datasateBaseName = "ukdale_def"
 
 
 
@@ -55,28 +55,28 @@ def newPlot(train,test,predictions,seriesName,path,day):
 
 def main():
 	#Iterating for all the 
-	#for i in range(1,6):
+	for i in range(1,6):
 
-	#datasetName = datasateBaseName + str(i)
-	datasetName = datasateBaseName
+		datasetName = datasateBaseName + str(i)
+		#datasetName = datasateBaseName
 
-	#reading the header from the dataset
-	series = read_csv("Dataset/" + datasetName + ".csv",header=0,index_col=0,nrows=1)
-	seriesNames = list(series.columns.values)
-	seriesNames += ["total"]
-	outPath = basePath + datasetName
+		#reading the header from the dataset
+		series = read_csv("Dataset/" + datasetName + ".csv",header=0,index_col=0,nrows=1)
+		#seriesNames = list(series.columns.values)
+		seriesNames = ["total"]
+		outPath = basePath + datasetName
 
-	for serie in seriesNames:
-		seriesPath = outPath + "/" + serie
-		print(seriesPath)
+		for serie in seriesNames:
+			seriesPath = outPath + "/" + serie
+			print(seriesPath)
 
-		#reading the csv
-		predictions7,test7,train7,predictions30,test30,train30 = read_series(seriesPath)
+			#reading the csv
+			predictions7,test7,train7,predictions30,test30,train30 = read_series(seriesPath)
 
-		#plot the new plot
-		newPlot(train7,test7,predictions7,serie,seriesPath,7)
-		end = newPlot(train30,test30,predictions30,serie,seriesPath,30)
-		print(seriesPath + " done! \n")
+			#plot the new plot
+			newPlot(train7,test7,predictions7,serie,seriesPath,7)
+			end = newPlot(train30,test30,predictions30,serie,seriesPath,30)
+			print(seriesPath + " done! \n")
 
 if __name__ == "__main__":
 	main()

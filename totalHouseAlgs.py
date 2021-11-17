@@ -92,7 +92,7 @@ def save_plot(seriesName, algorithmType):
                     print("Creation of the directory %s failed" % path)
 
             day = trainSize / 1440
-            finalPath = path + "/" + str(int(day)) + "days_plot_total.png"
+            finalPath = path + "/" + str(int(day)) + "days_plot.png"
             pyplot.savefig(finalPath, dpi=100)
 
     except ValueError:
@@ -249,7 +249,7 @@ def main(algorithmType):
 '''
 	PUT HERE THE CONFIGURATION VALUES
 										'''
-trainSize = TrainignTimeType.ONE_MONTH
+trainSize = TrainignTimeType.ONE_WEEK
 testSize = TestingTimeType.ONE_DAY
   # 561
 
@@ -258,10 +258,10 @@ testSize = TestingTimeType.ONE_DAY
 
 if __name__ == '__main__':
 
-    houses = ["ukdale_def1.csv", "ukdale_def2.csv", "ukdale_def3.csv", "ukdale_def4.csv", "ukdale_def5.csv"]
-    #houses = ["ukdale_def4.csv"]
+    #houses = ["ukdale_def1.csv", "ukdale_def2.csv", "ukdale_def3.csv", "ukdale_def4.csv", "ukdale_def5.csv"]
+    houses = ["ukdale_def1.csv"]
     #algorithms = ["arima", "sarima", "sarimax"]
-    algorithms = ["arimastd"]
+    algorithms = ["sarimax"]
 
     # Reading the series from the dataset file
 
