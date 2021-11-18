@@ -126,8 +126,6 @@ def main(seriesName):
 	#history = [x for x in train]
 	predictions = list()
 
-	print("\nTraining the model...\n")
-
 	maxLen = len(test)
 
 	#Creating the ARIMA model
@@ -136,11 +134,18 @@ def main(seriesName):
 	print("\nTraining the model...\n")
 	model = ARIMA(train, order=(5,0,1))
 	model_fit = model.fit()
-	
 
-	yhat = model_fit.predict(start=0, end=len(test))
-	#print(yhat)
+	print("Testing...")
+	
 	predictions = list()
+	for i in range(0,len(test)):
+		perc = (100 / maxLen) * i
+		print("\nPerc: %.2f%%" %perc,end="\r")
+		print ("\033[A                             \033[A")
+		yhat = model_fit.predict(start=i, end=i+1)
+		predictions.append(yhat[0])
+		model_fit = model_fit.append([yhat[0]])
+
 
 	#print(model_fit.summary())
 
@@ -148,12 +153,9 @@ def main(seriesName):
 	# plot forecasts against actual outcomes
 	yhat = model_fit.forecast(steps=len(test), exog=exoTest)
 	predictions = list()
-	''' 
+	'''
 
-	for value in yhat[1:]:
-		predictions.append(value)
-
-	print("Testing...")
+	
 
 
 	fc_series = pd.Series(predictions,index=test.index)
@@ -200,7 +202,7 @@ shiftRow = 1
 
 if __name__ == '__main__':
     #houses = ["ukdale_def1.csv", "ukdale_def2.csv", "ukdale_def3.csv", "ukdale_def4.csv", "ukdale_def5.csv"]
-	houses = ["ukdale_def1.csv"]
+	houses = ["ukdale_def4.csv"]
 
 	appliances = {
 		"ukdale_def1.csv" : ["Boiler","Solar Termal Pump","Laptop","Washing Machine","Dishwasher","TV","Kitchen Lights","Htpc","Kettle","Toaster","Fridge","Microwave","LCD_Office","HIFI_Office","BreadMaker","Amp_Living","ADSL_Router","Living_lamp1","Soldering_Iron","GigE_USBHUB","Hoover","Kitchen Lamp1","Bedroom_Lamp","Lightning_Circuit","Living_lamp2","iPad_Charger","Subwoofer_L","Living_LampTV","DAB_radio","Kitchen Lamp2","Kitchen Phone_Stereo","UtilityRM_Lamp","Samsung_Charger","Bedroom_d_Lamp","Coffee_Machine","Kitchen_Radio","Bedroom_Chargers","Hair_Dryer","Straighteners","Iron","Gas_Oven","Datalogger_PC","Childs_table_lamp","Childs_ds_lamp","BabyMonitor","Battery_Charger","Office_Lamp1","Office_Lamp2","Office_Lamp3","Office_PC","Office_Fan","Led_Printer"],
@@ -209,7 +211,7 @@ if __name__ == '__main__':
 
 		"ukdale_def3.csv" : ["Kettle","Electric_Heater","Laptop","Projector"],
 
-		"ukdale_def4.csv" : ["Tv_Dvd_Lamp","Kettle_Radio","Gas_Boiler","Freezer","Washing_Machine_Microwave_breadmaker"],
+		"ukdale_def4.csv" : ["Tv_Dvd_Lamp"],#,"Kettle_Radio","Gas_Boiler","Freezer","Washing_Machine_Microwave_breadmaker"],
 
 		"ukdale_def5.csv" : ["Stereo_Speakers_Bedroom","Pc Desktop","Hair Dryer","Primary TV","TV Bed","Treadmill","Network_attached_storage","Core2_server","24_inch_lcd TV","PS4","Steam_iron","Nespresso_Pixie","Atom_Pc","Toaster","Home_Theatre_Amp","Sky_Hd_Box","Kettle","Fridge_Freezer","Oven","Electric_Hob","Dishwasher","Microwave","Washer_dryer","Vacuum_Cleaner"]
 		}
